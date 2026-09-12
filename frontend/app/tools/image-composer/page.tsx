@@ -1,0 +1,3 @@
+'use client';
+import Link from 'next/link'; import { ArrowLeft, Image } from 'lucide-react'; import { CanvasEditor } from '../../../components/CanvasEditor';
+export default function ImageComposer() { return <main className="min-h-screen bg-paper px-6 py-8"><div className="mx-auto max-w-5xl"><Link href="/" className="text-sm text-slate-500"><ArrowLeft className="mr-2 inline" size={15} /> Back to toolkit</Link><div className="mt-14"><Image className="text-coral" size={32} /><h1 className="mt-5 font-display text-6xl">Image composer</h1><p className="mt-4 text-lg text-slate-500">A clean canvas for quick edits, notes, and exports.</p><div className="mt-10 overflow-auto rounded-2xl bg-white p-5"><CanvasEditor /></div></div></div></main>; }

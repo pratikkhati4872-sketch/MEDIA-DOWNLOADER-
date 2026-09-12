@@ -1,0 +1,3 @@
+'use client';
+import Link from 'next/link'; import { ArrowLeft, Layers3 } from 'lucide-react'; import { FileUploader } from '../../../components/FileUploader';
+export default function BatchConverter() { return <main className="min-h-screen bg-paper px-6 py-8"><div className="mx-auto max-w-3xl"><Link href="/" className="text-sm text-slate-500"><ArrowLeft className="mr-2 inline" size={15} /> Back to toolkit</Link><div className="mt-20"><Layers3 className="text-coral" size={32} /><h1 className="mt-5 font-display text-6xl">Batch converter</h1><p className="mt-4 text-lg text-slate-500">Drop up to 20 files and let the queue do the repetitive work.</p><div className="mt-10"><FileUploader onFiles={(files) => console.log(files.slice(0, 20))} /></div></div></div></main>; }
