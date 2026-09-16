@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil, subprocess, uuid
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import FileResponse
-from services.ocr_service import extract_text
+from backend.services.ocr_service import extract_text
 
 router = APIRouter()
 STORAGE = Path(__file__).parents[1] / 'storage'

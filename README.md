@@ -15,11 +15,10 @@ Open http://localhost:3000.
 ## Run the backend
 
 ```bash
-cd backend
 python -m venv .venv
 .venv\\Scripts\\activate
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
+pip install -r backend/requirements.txt
+python -m uvicorn backend.main:app --reload --port 8000
 ```
 
 Optional native tools: install LibreOffice and Tesseract, then configure `TESSERACT_CMD` if Tesseract is not on PATH. `rembg` downloads its model on first use.
@@ -33,6 +32,6 @@ The repository includes `render.yaml` for a Render Blueprint deployment. For an 
 ```text
 Root Directory: .
 Build Command: pip install -r requirements.txt
-Start Command: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+Start Command: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
 Health Check Path: /health
 ```

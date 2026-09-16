@@ -1,7 +1,7 @@
 from io import BytesIO
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
-from services.bg_remover import remove_background
+from backend.services.bg_remover import remove_background
 
 router = APIRouter()
 

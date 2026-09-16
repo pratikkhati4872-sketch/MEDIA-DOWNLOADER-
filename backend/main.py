@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.pdf_tools import router as pdf_router
-from routes.image_tools import router as image_router
-from routes.batch import router as batch_router
-from routes.downloads import router as downloads_router
-from services.cleanup import start_cleanup_worker
+from backend.routes.pdf_tools import router as pdf_router
+from backend.routes.image_tools import router as image_router
+from backend.routes.batch import router as batch_router
+from backend.routes.downloads import router as downloads_router
+from backend.services.cleanup import start_cleanup_worker
 
 app = FastAPI(title='Format Studio API', version='0.1.0')
 app.add_middleware(CORSMiddleware, allow_origins=['http://localhost:3000', 'http://192.168.10.105:3000'], allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
