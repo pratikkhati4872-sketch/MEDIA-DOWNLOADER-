@@ -16,5 +16,9 @@ app.include_router(downloads_router, prefix='/api/downloads', tags=['downloads']
 @app.on_event('startup')
 async def startup(): start_cleanup_worker()
 
+@app.get('/')
+async def root():
+    return {'status': 'ok', 'service': 'format-studio', 'health': '/health'}
+
 @app.get('/health')
 async def health(): return {'status': 'ok', 'service': 'format-studio'}
