@@ -1,9 +1,10 @@
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 python-multipart==0.0.20
-pillow==11.1.0
+pillow>=11.1.0
 pdf2docx==0.5.8
 pytesseract==0.3.13
 rembg==2.0.68
 onnxruntime==1.24.1
 pypdf==5.1.0
+yt-dlp>=2025.1.15

@@ -5,6 +5,9 @@
 :root {
     --font-sans: 'Avenir Next', 'Segoe UI', sans-serif;
     --font-display: Georgia, 'Times New Roman', serif;
+    --sidebar: #17211f;
+    --workspace: #f8f7f3;
+    --teal: #7bc8b1;
 }
 
 * {
@@ -13,7 +16,7 @@
 
 body {
     margin: 0;
-    background: #f5f3ec;
+    background: var(--workspace);
     color: #17211f;
     font-family: var(--font-sans);
 }
@@ -41,4 +44,24 @@ input {
     transform: translateY(-4px);
     box-shadow: 0 18px 35px rgba(23, 33, 31, .08);
     border-color: #9caea2;
+}
+
+.bg-sidebar {
+    background-color: var(--sidebar);
+}
+
+.bg-workspace {
+    background-color: var(--workspace);
+}
+
+.bg-teal {
+    background-color: var(--teal);
+}
+
+.text-teal {
+    color: var(--teal);
+}
+
+.workspace-shell {
+    color: #17211f;
 }
