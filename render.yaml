@@ -6,6 +6,21 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
+    plan: free
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
+
+  - type: web
+    name: format-studio
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://format-studio-api.onrender.com
+      - key: NODE_VERSION
+        value: 20.11.0
