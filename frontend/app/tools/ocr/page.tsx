@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowLeft, Check, Clipboard, Download, LoaderCircle, ScanText } from 'lucide-react';
 import { FileUploader } from '../../../components/FileUploader';
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
+import { apiUrl } from '../../../lib/api-url';
 
 export default function Ocr() {
     const [text, setText] = useState('');

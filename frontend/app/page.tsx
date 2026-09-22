@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Clock3, Download, FileText, Image, Layers3, Link2, Menu, Search, ScanText, Settings2, Upload, WandSparkles, X } from 'lucide-react';
 import { ImageCompressor } from '../components/ImageCompressor';
+import { apiUrl } from '../lib/api-url';
 
 type Tool = { name: string; category: string; description: string; icon: typeof Download; href?: string; kind: 'url' | 'file' | 'compressor' };
 
@@ -42,7 +43,7 @@ export default function Home() {
         setDownloadError('');
         setDownloadUrl('');
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'}/api/downloads/media`, {
+            const response = await fetch(`${apiUrl}/api/downloads/media`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url: url.trim(), kind: activeTool === 'Audio Downloader' ? 'audio' : 'video' }),
