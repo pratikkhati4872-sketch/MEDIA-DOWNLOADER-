@@ -32,6 +32,7 @@ def download_media_file(url: str, kind: str, quality: str) -> tuple[tempfile.Tem
         'quiet': True,
         'merge_output_format': 'mp4' if kind == 'video' else None,
         'remote_components': ['ejs:github'],
+        'extractor_args': {'youtube': {'player_client': ['android_vr', 'android']}},
     }
     deno = shutil.which('deno') or str(Path.cwd() / '.deno' / 'bin' / 'deno')
     if Path(deno).is_file():
