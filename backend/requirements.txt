@@ -1,11 +1,6 @@
-fastapi==0.115.6
-uvicorn[standard]==0.34.0
-python-multipart
-pillow>=11.1.0
-pdf2docx==0.5.8
-pytesseract==0.3.13
-rembg==2.0.68
-onnxruntime==1.24.1
+fastapi
+uvicorn
+yt-dlp>=2024.01.01
 pypdf
-yt-dlp==2026.8.19
-httpx>=0.27.0
+python-multipart
+httpx
