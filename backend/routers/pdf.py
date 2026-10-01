@@ -3,7 +3,12 @@ from pathlib import PurePosixPath
 
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import JSONResponse, StreamingResponse
-from pypdf import PdfMerger, PdfReader, PdfWriter
+from pypdf import PdfReader, PdfWriter
+
+try:
+    from pypdf import PdfMerger
+except ImportError:
+    PdfMerger = None
 
 router = APIRouter()
 
@@ -21,8 +26,8 @@ async def merge_pdfs(files: list[UploadFile] = File(...)):
             return JSONResponse(status_code=400, content={'status': 'error', 'message': 'All uploaded files must be PDF files'})
 
         try:
-            merger = PdfMerger()
-            use_writer = False
+            merger = PdfMerger() if PdfMerger is not None else None
+            use_writer = merger is None
         except Exception:
             merger = PdfWriter()
             use_writer = True
