@@ -20,7 +20,7 @@ services:
     branch: main
     autoDeploy: true
     buildCommand: npm install --include=dev && npx --no-install next build
-    startCommand: npm start
+    startCommand: npx next start -p $PORT
     healthCheckPath: /
     plan: free
     envVars:
