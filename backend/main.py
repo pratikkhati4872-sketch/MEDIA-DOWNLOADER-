@@ -9,6 +9,7 @@ from backend.routers.download import router as downloads_router
 from backend.services.cleanup import start_cleanup_worker
 
 app = FastAPI(title='Format Studio API', version='0.1.0')
+DEPLOY_REVISION = 'ad59387'
 app.add_middleware(CORSMiddleware, allow_origins=['https://ninjaa.me', 'https://www.ninjaa.me', 'http://localhost:3000', 'http://127.0.0.1:3000'], allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
 app.include_router(pdf.router)
 app.include_router(image_router, prefix='/api/image', tags=['image'])
@@ -36,4 +37,4 @@ async def root():
     return {'status': 'ok', 'service': 'format-studio', 'health': '/health'}
 
 @app.get('/health')
-async def health(): return {'status': 'ok', 'service': 'format-studio'}
+async def health(): return {'status': 'ok', 'service': 'format-studio', 'revision': DEPLOY_REVISION}
