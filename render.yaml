@@ -20,7 +20,5 @@ services:
     healthCheckPath: /
     plan: free
     envVars:
-      - key: NEXT_PUBLIC_API_URL
-        value: https://format-studio-api.onrender.com
       - key: NODE_VERSION
         value: 20.11.0
