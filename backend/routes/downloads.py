@@ -1,5 +1,6 @@
 import asyncio
 import mimetypes
+import shutil
 import tempfile
 from pathlib import Path
 from urllib.parse import urlparse
@@ -30,7 +31,11 @@ def download_media_file(url: str, kind: str, quality: str) -> tuple[tempfile.Tem
         'format': 'bestaudio/best' if kind == 'audio' else f'bestvideo{height_filter}+bestaudio/best{height_filter}',
         'quiet': True,
         'merge_output_format': 'mp4' if kind == 'video' else None,
+        'remote_components': ['ejs:github'],
     }
+    deno = shutil.which('deno') or str(Path.cwd() / '.deno' / 'bin' / 'deno')
+    if Path(deno).is_file():
+        options['js_runtimes'] = {'deno': {'path': deno}}
     if kind == 'audio':
         options['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}]
 

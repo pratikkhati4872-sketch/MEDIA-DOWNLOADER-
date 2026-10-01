@@ -5,7 +5,7 @@ services:
     rootDir: .
     branch: main
     autoDeploy: true
-    buildCommand: apt-get update && apt-get install -y ffmpeg && pip install -r requirements.txt
+    buildCommand: apt-get update && apt-get install -y ffmpeg curl unzip && curl -fsSL https://deno.land/install.sh | DENO_INSTALL="$PWD/.deno" sh -s -- -y && pip install -r requirements.txt
     startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     plan: free
