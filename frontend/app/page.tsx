@@ -33,7 +33,6 @@ export default function Home() {
     const [downloadState, setDownloadState] = useState<'idle' | 'downloading' | 'success' | 'error'>('idle');
     const [downloadUrl, setDownloadUrl] = useState('');
     const [downloadName, setDownloadName] = useState('format-studio-download');
-    const [thumbnail, setThumbnail] = useState('');
     const [downloadError, setDownloadError] = useState('');
     const selectedTool = tools.find((tool) => tool.name === activeTool) ?? tools[0];
     const visibleTools = useMemo(() => tools.filter((tool) => tool.name.toLowerCase().includes(query.toLowerCase()) || tool.category.toLowerCase().includes(query.toLowerCase())), [query]);
@@ -44,19 +43,26 @@ export default function Home() {
         setDownloadState('downloading');
         setDownloadError('');
         setDownloadUrl('');
-        setThumbnail('');
         try {
             const response = await fetch(`${apiUrl}/api/downloads/media`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url: url.trim(), kind: activeTool === 'Audio Downloader' ? 'audio' : 'video', quality }),
             });
-            if (!response.ok) throw new Error((await response.text()) || 'The media download failed.');
-            const metadata = await response.json() as { url?: string; title?: string; thumbnail?: string; extension?: string };
-            if (!metadata.url) throw new Error('The downloader did not return a stream URL.');
-            setDownloadUrl(metadata.url);
-            setThumbnail(metadata.thumbnail || '');
-            setDownloadName(`${metadata.title || `format-studio-${activeTool === 'Audio Downloader' ? 'audio' : 'video'}`}.${metadata.extension || 'mp4'}`);
+            if (!response.ok) {
+                let message = 'The media download failed.';
+                try {
+                    const error = await response.json() as { detail?: string; error?: string };
+                    message = error.detail || error.error || message;
+                } catch {
+                    // Keep the safe fallback for non-JSON proxy errors.
+                }
+                throw new Error(message);
+            }
+            const contentDisposition = response.headers.get('content-disposition') || '';
+            const filename = contentDisposition.match(/filename="([^"]+)"/i)?.[1];
+            setDownloadUrl(URL.createObjectURL(await response.blob()));
+            setDownloadName(filename || `format-studio-${activeTool === 'Audio Downloader' ? 'audio.mp3' : 'video.mp4'}`);
             setDownloadState('success');
         } catch (error) {
             setDownloadError(error instanceof Error ? error.message : 'The media download failed.');
@@ -78,10 +84,10 @@ export default function Home() {
                     {selectedTool.kind === 'url' ? <div className="rounded-2xl border border-line bg-white p-6 shadow-[0_18px_50px_rgba(23,33,31,.05)] sm:p-8">
                         <div className="mb-8 flex items-center justify-between"><div><h2 className="text-lg font-bold text-ink">Paste a {activeTool === 'Audio Downloader' ? 'media' : 'video'} URL</h2><p className="mt-1 text-sm text-slate-500">Works with the link copied from your browser.</p></div><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#e0efea] text-moss"><Link2 size={19} /></span></div>
                         <label htmlFor="media-url" className="mb-2 block text-xs font-bold uppercase tracking-[.14em] text-slate-500">Media link</label>
-                        <div className="flex flex-col gap-3 sm:flex-row"><input id="media-url" value={url} onChange={(event) => { setUrl(event.target.value); setDownloadUrl(''); setThumbnail(''); setDownloadState('idle'); }} placeholder="https://..." className="min-w-0 flex-1 rounded-xl border border-line bg-[#fbfaf7] px-4 py-3.5 text-sm text-ink outline-none transition focus:border-teal focus:ring-2 focus:ring-teal/20" /><select aria-label="Video quality" value={quality} onChange={(event) => { setQuality(event.target.value); setDownloadUrl(''); setThumbnail(''); setDownloadState('idle'); }} className="rounded-xl border border-line bg-[#fbfaf7] px-4 py-3.5 text-sm text-ink outline-none focus:border-teal"><option value="best">Best available</option><option value="1080p">1080p</option><option value="720p">720p</option><option value="420p">420p</option></select><button type="button" onClick={downloadMedia} disabled={!url.trim() || downloadState === 'downloading'} className="flex items-center justify-center gap-2 rounded-xl bg-sidebar px-5 py-3.5 text-sm font-bold text-white transition hover:bg-moss disabled:cursor-not-allowed disabled:opacity-40">{downloadState === 'downloading' ? 'Loading...' : 'Get preview'} <ArrowRight size={16} /></button></div>
-                        {downloadState === 'success' && <div className="mt-6 overflow-hidden rounded-xl border border-line bg-[#101c1a]"><video controls preload="metadata" poster={thumbnail || undefined} src={downloadUrl} className="aspect-video w-full" /><div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4"><p className="min-w-0 flex-1 truncate text-sm font-semibold text-ink">{downloadName}</p><a href={downloadUrl} download={downloadName} className="inline-flex items-center gap-2 rounded-xl bg-moss px-4 py-3 text-sm font-bold text-white transition hover:bg-ink"><Download size={16} /> Download</a></div></div>}
+                        <div className="flex flex-col gap-3 sm:flex-row"><input id="media-url" value={url} onChange={(event) => { setUrl(event.target.value); setDownloadUrl(''); setDownloadState('idle'); }} placeholder="https://..." className="min-w-0 flex-1 rounded-xl border border-line bg-[#fbfaf7] px-4 py-3.5 text-sm text-ink outline-none transition focus:border-teal focus:ring-2 focus:ring-teal/20" /><select aria-label="Video quality" value={quality} onChange={(event) => { setQuality(event.target.value); setDownloadUrl(''); setDownloadState('idle'); }} className="rounded-xl border border-line bg-[#fbfaf7] px-4 py-3.5 text-sm text-ink outline-none focus:border-teal"><option value="best">Best available</option><option value="1080p">1080p</option><option value="720p">720p</option><option value="420p">420p</option></select><button type="button" onClick={downloadMedia} disabled={!url.trim() || downloadState === 'downloading'} className="flex items-center justify-center gap-2 rounded-xl bg-sidebar px-5 py-3.5 text-sm font-bold text-white transition hover:bg-moss disabled:cursor-not-allowed disabled:opacity-40">{downloadState === 'downloading' ? 'Loading...' : 'Get preview'} <ArrowRight size={16} /></button></div>
+                        {downloadState === 'success' && <div className="mt-6 overflow-hidden rounded-xl border border-line bg-[#101c1a]">{activeTool === 'Audio Downloader' ? <audio controls preload="metadata" src={downloadUrl} className="w-full" /> : <video controls preload="metadata" src={downloadUrl} className="aspect-video w-full" />}<div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4"><p className="min-w-0 flex-1 truncate text-sm font-semibold text-ink">{downloadName}</p><a href={downloadUrl} download={downloadName} className="inline-flex items-center gap-2 rounded-xl bg-moss px-4 py-3 text-sm font-bold text-white transition hover:bg-ink"><Download size={16} /> Download</a></div></div>}
                         {downloadState === 'error' && <p role="alert" className="mt-5 rounded-xl border border-[#e8bdb4] bg-[#fff3f0] px-4 py-3 text-sm text-[#a54638]">{downloadError}</p>}
-                        <div className="mt-7 flex items-center gap-2 border-t border-line pt-5 text-xs text-slate-400"><CheckCircle2 size={15} className="text-teal" /> Direct links expire after a short time, so download when ready.</div>
+                        <div className="mt-7 flex items-center gap-2 border-t border-line pt-5 text-xs text-slate-400"><CheckCircle2 size={15} className="text-teal" /> Your file is prepared privately by the server.</div>
                     </div> : selectedTool.kind === 'compressor' ? <ImageCompressor /> : <div className="rounded-2xl border border-line bg-white p-6 shadow-[0_18px_50px_rgba(23,33,31,.05)] sm:p-8"><div className="mb-8 flex items-center justify-between"><div><h2 className="text-lg font-bold text-ink">{selectedTool.name} is ready in its dedicated workspace</h2><p className="mt-1 text-sm text-slate-500">Open the tool to upload a file and see progress, validation, and the finished result.</p></div><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#e0efea] text-moss"><Upload size={19} /></span></div><Link href={selectedTool.href ?? '/'} className="inline-flex items-center gap-2 rounded-xl bg-sidebar px-5 py-3.5 text-sm font-bold text-white transition hover:bg-moss">Open {selectedTool.name} <ArrowRight size={16} /></Link></div>}
                     <aside className="rounded-2xl border border-line bg-[#f0eee7] p-6 sm:p-7"><div className="flex items-center justify-between"><h2 className="text-lg font-bold text-ink">Recent activity</h2><Clock3 size={18} className="text-slate-400" /></div><div className="mt-6 space-y-4">{recentItems.map((item) => <div key={item.name} className="flex items-start gap-3 border-b border-[#d9d8d0] pb-4 last:border-0 last:pb-0"><div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white text-moss"><FileText size={15} /></div><div className="min-w-0"><p className="truncate text-sm font-semibold text-ink">{item.name}</p><p className="mt-1 text-xs leading-5 text-slate-500">{item.detail}</p><span className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-moss"><CheckCircle2 size={12} /> {item.status}</span></div></div>)}</div>{selectedTool.href && <Link href={selectedTool.href} className="mt-7 flex items-center justify-center gap-2 rounded-xl bg-sidebar px-4 py-3 text-xs font-bold text-white transition hover:bg-moss">Open {selectedTool.name} <ArrowRight size={14} /></Link>}<button type="button" className="mt-4 flex items-center gap-2 text-xs font-bold text-ink hover:text-moss">View all activity <ArrowRight size={14} /></button></aside>
                 </div><div className="mt-9 flex items-center gap-2 text-xs text-slate-400"><span className="h-1.5 w-1.5 rounded-full bg-teal" /> Ready when you are <span className="mx-1 text-slate-300">·</span> One tool at a time, no page refreshes.</div>

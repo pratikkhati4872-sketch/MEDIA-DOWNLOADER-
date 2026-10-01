@@ -23,6 +23,8 @@ python -m uvicorn backend.main:app --reload --port 8000
 
 Optional native tools: install LibreOffice and Tesseract, then configure `TESSERACT_CMD` if Tesseract is not on PATH. `rembg` downloads its model on first use.
 
+Media downloads use yt-dlp and FFmpeg to combine YouTube video and audio streams. FFmpeg is installed by the Render build command; install it locally as well for media downloads.
+
 Set `NEXT_PUBLIC_API_URL=http://localhost:8000` in `frontend/.env.local` when connecting the UI to the API.
 
 ## Deploy the backend to Render
