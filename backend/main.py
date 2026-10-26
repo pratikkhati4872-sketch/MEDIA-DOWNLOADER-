@@ -10,6 +10,8 @@ app = FastAPI(title='CyberVault API')
 default_origins = [
     'https://ninjaa.me',
     'https://www.ninjaa.me',
+    'https://format-studio.onrender.com',
+    'https://format-studio-api.onrender.com',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
