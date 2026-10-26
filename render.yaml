@@ -12,6 +12,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
+      - key: CORS_ALLOW_ORIGINS
+        value: https://format-studio.onrender.com,https://www.ninjaa.me,https://ninjaa.me,http://localhost:3000,http://127.0.0.1:3000
 
   - type: web
     name: format-studio
@@ -26,3 +28,5 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.11.0
+      - key: NEXT_PUBLIC_API_URL
+        value: https://format-studio-api.onrender.com
